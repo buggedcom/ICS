@@ -1,5 +1,5 @@
 {
-    "name":     "jsvrcek/ics",
+    "name":     "buggedcom/ics",
     "type":     "library",
     "description": "abstraction layer for creating multi-byte safe RFC 5545 compliant .ics files",
     "keywords": ["ical", "calendar", "export", ".ics", "RFC 5545", "multi-byte safe"],
