@@ -39,43 +39,45 @@ class CalendarStream
      */
     public function addItem($item)
     {
-        //get number of bytes
-        $length = strlen($item);
-        
-        $block = '';
-        
-        if ($length > 75)
+        $lines = array();
+        $parts = explode(PHP_EOL, trim($item));
+        $top = array_shift($parts);
+
+        $lines[] = $top;
+
+        if(empty($parts) === false)
         {
-            $start = 0;
-            
-            while ($start < $length)
+            $lines[0] .= "\\n";
+
+            foreach ($parts as $line)
             {
-                $block .= mb_strcut($item, $start, self::LINE_LENGTH, 'UTF-8');
-                $start = $start + self::LINE_LENGTH;
-                
-                //add space if not last line
-                if ($start < $length) $block .= Constants::CRLF.' ';
-            }
-        }
-        else
-        {
-            if(strpos($item, PHP_EOL) !== false)
-            {
-                $parts = explode(PHP_EOL, $item);
-                $item = array(array_shift($parts));
-                foreach ($parts as $part)
+                $block = ' ';
+                //get number of bytes
+                $length = strlen($line);
+                if ($length > 75)
                 {
-                    $item[] = ' '.$part;
+                    $start = 0;
+                    while ($start < $length)
+                    {
+                        $block .= mb_strcut($line, $start, self::LINE_LENGTH, 'UTF-8');
+                        $start = $start + self::LINE_LENGTH;
+                        
+                        //add space if not last line
+                        if ($start < $length) $block .= Constants::CRLF.' ';
+                    }
                 }
-                $block = implode(Constants::CRLF, $item);
-            }
-            else
-            {
-                $block = $item;
+                else
+                {
+                    $block = ' '.$line;
+                }
+        
+                $lines[] = $block."\\n";
             }
         }
-    
-        $this->stream .= $block.Constants::CRLF;
+
+        $item = trim(implode(Constants::CRLF, $lines));
+
+        $this->stream .= $item.Constants::CRLF;
         
         return $this;
     }
