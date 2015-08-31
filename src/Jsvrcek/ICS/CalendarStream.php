@@ -59,7 +59,20 @@ class CalendarStream
         }
         else
         {
-            $block = $item;
+            if(strpos($item, PHP_EOL) !== false)
+            {
+                $parts = explode(PHP_EOL, $item);
+                $item = array(array_shift($parts));
+                foreach ($parts as $part)
+                {
+                    $item[] = ' '.$part;
+                }
+                $block = implode(Constants::CRLF, $item);
+            }
+            else
+            {
+                $block = $item;
+            }
         }
     
         $this->stream .= $block.Constants::CRLF;
